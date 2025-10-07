@@ -1,9 +1,15 @@
 import React from 'react';
+type TransportationProps = {
+    goToNextPage: () => void;
+    goToPreviousPage: () => void;
+}
 
-export default function Transportation() {
+export default function Transportation({goToNextPage, goToPreviousPage} : TransportationProps) {
     return (
         <div>
-            <h1>Transportation</h1>
+            <button onClick = {goToPreviousPage}>Previous</button>
+            <button onClick = {goToNextPage}>Next</button>
         </div>
     );
 }   
+
