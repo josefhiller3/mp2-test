@@ -10,6 +10,7 @@ import Transportation from './transportation';
 interface Pokemon {
   name: string;
   url: string;
+  types?: string[];
 }
 
 function App() {
@@ -21,33 +22,54 @@ function App() {
   const [nextPageURL, setNextPageURL] = useState();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-    // const handleSearch = async (term: string) => {
-  //   if (!term) {
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get('https://pokeapi.co/api/v2/pokemon/${term.toLowerCase()}');
-  //     setCurrPokemon([{name: response.data.name, url: 'https://pokeapi.co/api/v2/pokemon/${response.data.id}/' }]);
-  //   } catch(error) {
-  //     console.error("Error fetching pokemon:", error);
-  //     setCurrPokemon([]);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
   
+
   useEffect(() => {
   
     setLoading(true);
     const Controller = new AbortController();
-    axios.get(currPageURL, {signal: Controller.signal}).then(res => {setCurrPokemon(res.data.results) 
-      setLoading(false);
-      setFilteredPokemon(res.data.results);
-      setPreviousPageURL(res.data.previous)
-      setNextPageURL(res.data.next)
+    async function fetchPokemon() {
+      try {
+        const response = await axios.get(currPageURL, {signal: Controller.signal});
+        const results = response.data.results;
+        // ending point for now
+        const detailed_results = await Promise.all(results.map(async (pokemon: Pokemon) => {
+          const detailed_response = await axios.get(pokemon.url, {signal: Controller.signal});
+          const types = detailed_response.data.types.map((type: {type: {name: string}}) => type.type.name);
+          return {...pokemon, types};
 
-    }).catch(err => console.error("Error fetching pokemon from API: ", err)); return () => Controller.abort()}, []);
+      }));
+
+      
+
+       
+      setCurrPokemon(detailed_results);
+      // setLoading(false);
+      setFilteredPokemon(detailed_results);
+      setPreviousPageURL(response.data.previous);
+      setNextPageURL(response.data.next);
+    } catch (error) {
+      console.error("Error fetching pokemon", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+    fetchPokemon();
+    return () => Controller.abort();
+  }, [currPageURL]);
+
+  useEffect(() => {
+    const term = searchTerm.trim().toLowerCase();
+    const filtered = curr_pokemon.filter((p) => p.name.toLowerCase().startsWith(term));
+    setFilteredPokemon(filtered);
+  }, [searchTerm, curr_pokemon]);
+    // axios.get(currPageURL, {signal: Controller.signal}).then(res => {setCurrPokemon(res.data.results) 
+    //   setLoading(false);
+    //   setFilteredPokemon(res.data.results);
+    //   setPreviousPageURL(res.data.previous)
+    //   setNextPageURL(res.data.next)
+
+    // }).catch(err => console.error("Error fetching pokemon from API: ", err)); return () => Controller.abort()}, []);
   useEffect(() => {
     const term = searchTerm.trim().toLowerCase();
    
@@ -77,7 +99,14 @@ function App() {
     return <div><p>Loading in progress...</p></div>;
   }
   
-  
+  const sortedPokemon = [...filteredPokemon].sort((a, b) => {
+    const typeA = a.types?.[0] || "";
+    const typeB = b.types?.[0] || "";
+    return order === "asc" ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
+    
+  });
+
+ 
   return (
     <div className = "App">
       <h1>Pokemon Search</h1>
@@ -87,10 +116,12 @@ function App() {
         <button onClick = {() => setOrder('asc')}>Sort A-Z</button>
         <button onClick = {() => setOrder('desc')}>Sort Z-A</button>
        </div>
-      {searchTerm.trim() !== "" && (<PokemonList curr_pokemon={filteredPokemon} setCurrPokemon={setCurrPokemon}/>)}
+     
+      
+      {searchTerm.trim() !== "" && (<PokemonList curr_pokemon={sortedPokemon} setCurrPokemon={setCurrPokemon}/>)}
       <Transportation goToNextPage = {goToNextPage} goToPreviousPage = {goToPreviousPage} />
     </div>
-  );
+  ); 
 
 }
 
