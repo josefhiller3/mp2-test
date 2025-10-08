@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {BrowserRouter as Router, Route, Routes, Link, BrowserRouter} from 'react-router-dom';
 import SearchPage from './Search'
 import GalleryPage from './Gallery'
+import DetailPage from './Detail'
 //abc
 //source: https://www.youtube.com/watch?v=o3ZUc7zH8BE
 
@@ -27,7 +28,7 @@ function App() {
       <Routes>
         <Route path = "/" element = {<SearchPage />}/>
         <Route path = "/gallery" element = {<GalleryPage />}/>
-
+        <Route path = "/pokemon/:name" element = {<DetailPage />}/>
       </Routes>
     </BrowserRouter>
   )

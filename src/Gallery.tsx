@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import "./Gallery.css";
+import {Link} from 'react-router-dom';
 
 interface Pokemon {
     name: string;
@@ -69,13 +70,14 @@ interface Pokemon {
             </div>
               <div className = "gallery-container">
               {filteredList.map((pokemon) => (
-                  <div key = {pokemon.name} className = "pokemon-card">
+                  <Link key = {pokemon.name} to = {`/pokemon/${pokemon.name}`} className = "pokemon-link">
+                    <div className = "pokemon-card">
                       <img src = {pokemon.sprite} alt = {pokemon.name} className='pokemon-image' />
                         <h3 className = "pokemon-name">{pokemon.name}</h3>
                         <p className = "pokemon-type">{pokemon.types && pokemon.types.length > 0 ? pokemon.types[0] : "Unknown"}</p>
                        
-                      
                       </div>
+                  </Link>
               ))}
           </div>
           </div>
