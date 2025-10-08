@@ -1,21 +1,11 @@
-.detail-container {
-  display: flex;
-  flex-direction: column;
-  
-  align-items:center;
-  justify-content: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-.button-container {
+.sortButtons {
     margin-top: 1.5rem;
     display: flex;
     gap: 1rem;
     justify-content: center;
 }
 
-.button-container button {
+.sortButtons button {
     padding: 0.5rem 1rem;
     background-color: #ef5350;
     color:white;
@@ -27,11 +17,11 @@
 
 }
 
-.button-container button:hover {
+.sortButtons button:hover {
     background-color: #d32f2f;
 }
 
-.button-container button:disabled {
+.sortButtons button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }

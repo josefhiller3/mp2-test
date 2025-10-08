@@ -2,6 +2,7 @@ import React, {useState, useEffect, useMemo} from 'react';
 import './App.css';
 import PokemonList from './pokemon_list';
 import axios, { CancelToken } from 'axios';
+import './Search.css';
 
 //abc
 //source: https://www.youtube.com/watch?v=o3ZUc7zH8BE
@@ -124,10 +125,12 @@ export default function SearchPage() {
         <input type = "text" placeholder = "Search pokemon" value = {searchTerm} onChange = {(e) => setSearchTerm(e.target.value)} className = "search-input" />
        <div style = {{marginBottom: '1rem'}}>
         <h3>Sort Options:</h3>
-        <button onClick = {() => {setSortField('name'); setOrder('asc');}}>Name A-Z</button>
-        <button onClick = {() => {setSortField('name'); setOrder('desc');}}>Name Z-A</button>
-        <button onClick = {() => {setSortField('type'); setOrder('asc');}}>Type A-Z</button>
-        <button onClick = {() => {setSortField('type'); setOrder('desc');}}>Type Z-A</button>
+          <div className = "sortButtons">
+            <button onClick = {() => {setSortField('name'); setOrder('asc');}}>Name A-Z</button>
+            <button onClick = {() => {setSortField('name'); setOrder('desc');}}>Name Z-A</button>
+            <button onClick = {() => {setSortField('type'); setOrder('asc');}}>Type A-Z</button>
+            <button onClick = {() => {setSortField('type'); setOrder('desc');}}>Type Z-A</button>
+          </div>
        </div>
      
       
