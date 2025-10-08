@@ -13,6 +13,9 @@ interface Pokemon {
   const Gallery : React.FC = () => {
     const [pokeList, setPokeList] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState(true);
+    const [filteredList, setFilteredList] = useState<Pokemon[]>([]);
+    const [selectedType, setSelectedType] = useState<string>("all");
+
 
     useEffect(() => {
       async function fetchPokemon() {
@@ -26,6 +29,7 @@ interface Pokemon {
           return {...p, types, sprite};
         }))
           setPokeList(detailed_results);
+          setFilteredList(detailed_results);
         } catch (error) {
             console.error("Error fetching pokemon:", error);
         } finally {
@@ -35,24 +39,49 @@ interface Pokemon {
 
     fetchPokemon();
     }, []);
-  
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
-  return (
-    <div className = "gallery-container">
-        {pokeList.map((pokemon) => (
-            <div key = {pokemon.name} className = "pokemon-card">
-                <img src = {pokemon.sprite} alt = {pokemon.name} className='pokemon-image' />
-                  <h3 className = "pokemon-name">{pokemon.name}</h3>
-                  <p className = "pokemon-type">{pokemon.types && pokemon.types.length > 0 ? pokemon.types[0] : "Unknown"}</p>
-                 
-                
+    useEffect(() => {
+        if (selectedType === "all") {
+            setFilteredList(pokeList);
+
+        } else {
+            const filtered = pokeList.filter((p) => p.types && p.types.length > 0 && p.types[0].toLowerCase() === selectedType.toLowerCase());
+            setFilteredList(filtered);
+            
+         }
+        }, [selectedType, pokeList]);
+
+        if (loading) {
+            return <p> Loading...</p>;
+
+        }
+        const uniqueTypes = Array.from(new Set(pokeList.map((p) => p.types && p.types[0]?.toLowerCase()).filter(Boolean))).sort();
+        return (
+            <div className = "whole-return">
+            <div className = "gallery-container">
+                <div className = "filter-container">
+                    <label htmlFor = "typeFilter">Filter by Type: </label>
+                    <select id = "typeFilter" value = {selectedType} onChange = {(e) => setSelectedType(e.target.value)}>
+                        <option value = "all">All</option>
+                        {uniqueTypes.map((type) => (<option key = {type} value = {type!}>{type}</option>))}
+                    </select>
                 </div>
-        ))}
-    </div>
-    );
+            </div>
+              <div className = "gallery-container">
+              {filteredList.map((pokemon) => (
+                  <div key = {pokemon.name} className = "pokemon-card">
+                      <img src = {pokemon.sprite} alt = {pokemon.name} className='pokemon-image' />
+                        <h3 className = "pokemon-name">{pokemon.name}</h3>
+                        <p className = "pokemon-type">{pokemon.types && pokemon.types.length > 0 ? pokemon.types[0] : "Unknown"}</p>
+                       
+                      
+                      </div>
+              ))}
+          </div>
+          </div>
+           
+        )
+
 };
 
 export default Gallery;
