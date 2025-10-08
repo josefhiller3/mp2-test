@@ -75,7 +75,7 @@ interface Pokemon {
                       <img src = {pokemon.sprite} alt = {pokemon.name} className='pokemon-image' />
                         <h3 className = "pokemon-name">{pokemon.name}</h3>
                         <p className = "pokemon-type">{pokemon.types && pokemon.types.length > 0 ? pokemon.types[0] : "Unknown"}</p>
-                       
+                         
                       </div>
                   </Link>
               ))}

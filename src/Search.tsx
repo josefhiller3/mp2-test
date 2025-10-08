@@ -2,7 +2,7 @@ import React, {useState, useEffect, useMemo} from 'react';
 import './App.css';
 import PokemonList from './pokemon_list';
 import axios, { CancelToken } from 'axios';
-import Transportation from './transportation';
+
 //abc
 //source: https://www.youtube.com/watch?v=o3ZUc7zH8BE
 
@@ -95,16 +95,16 @@ export default function SearchPage() {
   //   setFilteredPokemon(filtered);
 
   // }, [searchTerm, curr_pokemon, order]);
-    function goToNextPage() {
-    if (nextPageURL) {
-      setCurrPageURL(nextPageURL);
-    }
-  }
-  function goToPreviousPage() {
-    if (previousPageURL) {
-      setCurrPageURL(previousPageURL);
-    }
-  }
+//     function goToNextPage() {
+//     if (nextPageURL) {
+//       setCurrPageURL(nextPageURL);
+//     }
+//   }
+//   function goToPreviousPage() {
+//     if (previousPageURL) {
+//       setCurrPageURL(previousPageURL);
+//     }
+//   }
   if (loading) {
     return <div><p>Loading in progress...</p></div>;
   }
@@ -132,7 +132,7 @@ export default function SearchPage() {
      
       
       {searchTerm.trim() !== "" && (<PokemonList curr_pokemon={filteredPokemon} setCurrPokemon={setCurrPokemon}/>)}
-      <Transportation goToNextPage = {goToNextPage} goToPreviousPage = {goToPreviousPage} />
+     
     </div>
   ); 
 
