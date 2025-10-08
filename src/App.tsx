@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
+
 import logo from './logo.svg';
 import './App.css';
 import PokemonList from './pokemon_list';
@@ -15,14 +16,15 @@ interface Pokemon {
 
 function App() {
   const [curr_pokemon, setCurrPokemon] = useState<Pokemon[]>([]);
-  const [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
+  let [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currPageURL, setCurrPageURL] = useState("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0");
   const [previousPageURL, setPreviousPageURL] = useState();
   const [nextPageURL, setNextPageURL] = useState();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-  
+  const [sortField, setSortField] = useState<"name"|"type">("name");
+
 
   useEffect(() => {
   
@@ -58,33 +60,43 @@ function App() {
     return () => Controller.abort();
   }, [currPageURL]);
 
-  useEffect(() => {
+  filteredPokemon = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
-    const filtered = curr_pokemon.filter((p) => p.name.toLowerCase().startsWith(term));
-    setFilteredPokemon(filtered);
-  }, [searchTerm, curr_pokemon]);
-    // axios.get(currPageURL, {signal: Controller.signal}).then(res => {setCurrPokemon(res.data.results) 
-    //   setLoading(false);
-    //   setFilteredPokemon(res.data.results);
-    //   setPreviousPageURL(res.data.previous)
-    //   setNextPageURL(res.data.next)
-
-    // }).catch(err => console.error("Error fetching pokemon from API: ", err)); return () => Controller.abort()}, []);
-  useEffect(() => {
-    const term = searchTerm.trim().toLowerCase();
-   
-    let filtered = curr_pokemon.filter(pokemon => pokemon.name.toLowerCase().startsWith(term));
-    filtered = filtered.sort((a, b) => {
+    let filtered = curr_pokemon.filter(p => p.name.toLowerCase().startsWith(term));
+    filtered.sort((a,b) => {
+      let valA = "";
+      let valB = "";
+      if (sortField === "name") {
+        valA = a.name;
+        valB = b.name;
+      } else if (sortField === "type") {
+        valA = a.types?.[0] || "";
+        valB = b.types?.[0] || "";
+      }
       if (order === "asc") {
-        return a.name.localeCompare(b.name);
-
+        return valA.localeCompare(valB);
       } else {
-        return b.name.localeCompare(a.name);
+        return valB.localeCompare(valA);
       }
     });
-    setFilteredPokemon(filtered);
+    return filtered;
+  }, [searchTerm, curr_pokemon, sortField, order]);
+  
+  // useEffect(() => {
+  //   const term = searchTerm.trim().toLowerCase();
+   
+  //   let filtered = curr_pokemon.filter(pokemon => pokemon.name.toLowerCase().startsWith(term));
+  //   filtered = filtered.sort((a, b) => {
+  //     if (order === "asc") {
+  //       return a.name.localeCompare(b.name);
 
-  }, [searchTerm, curr_pokemon, order]);
+  //     } else {
+  //       return b.name.localeCompare(a.name);
+  //     }
+  //   });
+  //   setFilteredPokemon(filtered);
+
+  // }, [searchTerm, curr_pokemon, order]);
     function goToNextPage() {
     if (nextPageURL) {
       setCurrPageURL(nextPageURL);
@@ -99,12 +111,12 @@ function App() {
     return <div><p>Loading in progress...</p></div>;
   }
   
-  const sortedPokemon = [...filteredPokemon].sort((a, b) => {
-    const typeA = a.types?.[0] || "";
-    const typeB = b.types?.[0] || "";
-    return order === "asc" ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
+  // const sortedPokemon = [...filteredPokemon].sort((a, b) => {
+  //   const typeA = a.types?.[0] || "";
+  //   const typeB = b.types?.[0] || "";
+  //   return order === "asc" ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
     
-  });
+  // });
 
  
   return (
@@ -113,12 +125,15 @@ function App() {
 
         <input type = "text" placeholder = "Search pokemon" value = {searchTerm} onChange = {(e) => setSearchTerm(e.target.value)} className = "search-input" />
        <div style = {{marginBottom: '1rem'}}>
-        <button onClick = {() => setOrder('asc')}>Sort A-Z</button>
-        <button onClick = {() => setOrder('desc')}>Sort Z-A</button>
+        <h3>Sort Options:</h3>
+        <button onClick = {() => {setSortField('name'); setOrder('asc');}}>Name A-Z</button>
+        <button onClick = {() => {setSortField('name'); setOrder('desc');}}>Name Z-A</button>
+        <button onClick = {() => {setSortField('type'); setOrder('asc');}}>Type A-Z</button>
+        <button onClick = {() => {setSortField('type'); setOrder('desc');}}>Type Z-A</button>
        </div>
      
       
-      {searchTerm.trim() !== "" && (<PokemonList curr_pokemon={sortedPokemon} setCurrPokemon={setCurrPokemon}/>)}
+      {searchTerm.trim() !== "" && (<PokemonList curr_pokemon={filteredPokemon} setCurrPokemon={setCurrPokemon}/>)}
       <Transportation goToNextPage = {goToNextPage} goToPreviousPage = {goToPreviousPage} />
     </div>
   ); 
