@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {BrowserRouter as Router, Route, Routes, Link, BrowserRouter} from 'react-router-dom';
+import {Route, Routes, Link, BrowserRouter} from 'react-router-dom';
 import SearchPage from './Search'
 import GalleryPage from './Gallery'
 import PokemonDetail from './Detail'
@@ -15,10 +15,10 @@ interface Pokemon {
 
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortField, setSortField] = useState("name");
-  const [order, setOrder] = useState("asc");
-  const [filteredPokemon, setCurrPokemon] = useState<string[]>([]);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [sortField, setSortField] = useState("name");
+  // const [order, setOrder] = useState("asc");
+  // const [filteredPokemon, setCurrPokemon] = useState<string[]>([]);
   return (
     <BrowserRouter basename = "/mp2-test">
       <nav style = {{margin: "1rem"}}>

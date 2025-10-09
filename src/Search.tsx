@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import './App.css';
 import PokemonList from './pokemon_list';
-import axios, { CancelToken } from 'axios';
+import axios from 'axios';
 import './Search.css';
 
 //abc
@@ -18,9 +18,9 @@ export default function SearchPage() {
   const [curr_pokemon, setCurrPokemon] = useState<Pokemon[]>([]);
   let [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currPageURL, setCurrPageURL] = useState("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0");
-  const [previousPageURL, setPreviousPageURL] = useState();
-  const [nextPageURL, setNextPageURL] = useState();
+//   const [currPageURL, setCurrPageURL] = useState("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0");
+//   const [previousPageURL, setPreviousPageURL] = useState();
+//   const [nextPageURL, setNextPageURL] = useState();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<"name"|"type">("name");
@@ -31,9 +31,9 @@ export default function SearchPage() {
     const Controller = new AbortController();
     async function fetchPokemon() {
       try {
-        const response = await axios.get(currPageURL, {signal: Controller.signal});
+        const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0", {signal: Controller.signal});
         const results = response.data.results;
-        // ending point for now
+     
         const detailed_results = await Promise.all(results.map(async (pokemon: Pokemon) => {
           const detailed_response = await axios.get(pokemon.url, {signal: Controller.signal});
           const types = detailed_response.data.types.map((type: {type: {name: string}}) => type.type.name);
@@ -45,10 +45,10 @@ export default function SearchPage() {
 
        
       setCurrPokemon(detailed_results);
-      // setLoading(false);
+   
       setFilteredPokemon(detailed_results);
-      setPreviousPageURL(response.data.previous);
-      setNextPageURL(response.data.next);
+    //   setPreviousPageURL(response.data.previous);
+    //   setNextPageURL(response.data.next);
     } catch (error) {
       console.error("Error fetching pokemon", error);
     } finally {
@@ -57,7 +57,7 @@ export default function SearchPage() {
   }
     fetchPokemon();
     return () => Controller.abort();
-  }, [currPageURL]);
+  }, ["https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0"]);
 
   filteredPokemon = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -81,41 +81,12 @@ export default function SearchPage() {
     return filtered;
   }, [searchTerm, curr_pokemon, sortField, order]);
   
-  // useEffect(() => {
-  //   const term = searchTerm.trim().toLowerCase();
-   
-  //   let filtered = curr_pokemon.filter(pokemon => pokemon.name.toLowerCase().startsWith(term));
-  //   filtered = filtered.sort((a, b) => {
-  //     if (order === "asc") {
-  //       return a.name.localeCompare(b.name);
-
-  //     } else {
-  //       return b.name.localeCompare(a.name);
-  //     }
-  //   });
-  //   setFilteredPokemon(filtered);
-
-  // }, [searchTerm, curr_pokemon, order]);
-//     function goToNextPage() {
-//     if (nextPageURL) {
-//       setCurrPageURL(nextPageURL);
-//     }
-//   }
-//   function goToPreviousPage() {
-//     if (previousPageURL) {
-//       setCurrPageURL(previousPageURL);
-//     }
-//   }
+ 
   if (loading) {
     return <div><p>Loading in progress...</p></div>;
   }
   
-  // const sortedPokemon = [...filteredPokemon].sort((a, b) => {
-  //   const typeA = a.types?.[0] || "";
-  //   const typeB = b.types?.[0] || "";
-  //   return order === "asc" ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
-    
-  // });
+
 
  
   return (
