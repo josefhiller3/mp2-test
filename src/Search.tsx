@@ -4,7 +4,7 @@ import PokemonList from './pokemon_list';
 import axios from 'axios';
 import './Search.css';
 
-//abc
+
 //source: https://www.youtube.com/watch?v=o3ZUc7zH8BE
 
 interface Pokemon {
@@ -18,9 +18,7 @@ export default function SearchPage() {
   const [curr_pokemon, setCurrPokemon] = useState<Pokemon[]>([]);
   let [filteredPokemon, setFilteredPokemon] = useState<Pokemon[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-//   const [currPageURL, setCurrPageURL] = useState("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0");
-//   const [previousPageURL, setPreviousPageURL] = useState();
-//   const [nextPageURL, setNextPageURL] = useState();
+
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<"name"|"type">("name");
@@ -47,8 +45,7 @@ export default function SearchPage() {
       setCurrPokemon(detailed_results);
    
       setFilteredPokemon(detailed_results);
-    //   setPreviousPageURL(response.data.previous);
-    //   setNextPageURL(response.data.next);
+  
     } catch (error) {
       console.error("Error fetching pokemon", error);
     } finally {
@@ -94,7 +91,7 @@ export default function SearchPage() {
       <h1>Pokemon Search</h1>
 
         <input type = "text" placeholder = "Search pokemon" value = {searchTerm} onChange = {(e) => setSearchTerm(e.target.value)} className = "search-input" />
-       <div style = {{marginBottom: '1rem'}}>
+       <div className = "above-sort" >
         <h3>Sort Options:</h3>
           <div className = "sortButtons">
             <button onClick = {() => {setSortField('name'); setOrder('asc');}}>Name A-Z</button>

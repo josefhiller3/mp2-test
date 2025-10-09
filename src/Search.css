@@ -25,3 +25,7 @@
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+.above-sort {
+    margin-bottom: 1rem;
+}

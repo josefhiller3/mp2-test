@@ -1,0 +1,14 @@
+
+.nav-links .links1 {
+    margin-right: 2rem;
+}
+
+.nav-links .links2 {
+    margin-left: 2rem;
+}
+
+.nav-links {
+    margin: 1rem;
+    display: flex;
+    gap: 1rem;
+}

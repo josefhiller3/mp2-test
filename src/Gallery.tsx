@@ -9,9 +9,7 @@ interface Pokemon {
     types?: string[];
     sprite?: string;
 }
-
-// boilerplate code from Cursor
-  const Gallery : React.FC = () => {
+const Gallery : React.FC = () => {
     const [pokeList, setPokeList] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState(true);
     const [filteredList, setFilteredList] = useState<Pokemon[]>([]);
