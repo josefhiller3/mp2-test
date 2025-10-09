@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+// import React from 'react';
 import {Route, Routes, Link, BrowserRouter} from 'react-router-dom';
 import SearchPage from './Search'
 import GalleryPage from './Gallery'
@@ -6,11 +6,11 @@ import PokemonDetail from './Detail'
 //abc
 //source: https://www.youtube.com/watch?v=o3ZUc7zH8BE
 
-interface Pokemon {
-  name: string;
-  url: string;
-  types?: string[];
-}
+// interface Pokemon {
+//   name: string;
+//   url: string;
+//   types?: string[];
+// }
 
 
 

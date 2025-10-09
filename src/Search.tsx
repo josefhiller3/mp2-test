@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import {useState, useEffect, useMemo} from 'react';
 import './App.css';
 import PokemonList from './pokemon_list';
 import axios from 'axios';
@@ -57,7 +57,7 @@ export default function SearchPage() {
   }
     fetchPokemon();
     return () => Controller.abort();
-  }, ["https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0"]);
+  }, []);
 
   filteredPokemon = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
